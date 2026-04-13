@@ -47,4 +47,49 @@
     });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+  // Form validation
+  const form = document.querySelector('#contact form');
+  if (form) {
+    const submitBtn = form.querySelector('button[type="button"]');
+    const requiredFields = form.querySelectorAll('input[autocomplete="name"], input[autocomplete="email"], select');
+
+    function validateForm() {
+      let isValid = true;
+      requiredFields.forEach(field => {
+        const fieldContainer = field.closest('.field');
+        if (!field.value.trim()) {
+          fieldContainer.classList.add('invalid');
+          isValid = false;
+        } else {
+          fieldContainer.classList.remove('invalid');
+        }
+      });
+      return isValid;
+    }
+
+    submitBtn.addEventListener('click', (e) => {
+      if (!validateForm()) {
+        e.preventDefault();
+        // Scroll to first invalid field
+        const firstInvalid = form.querySelector('.invalid');
+        if (firstInvalid) {
+          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } else {
+        // Here you would normally submit the form
+        alert('Form submitted successfully! (This is just a demo - connect to real endpoint)');
+      }
+    });
+
+    // Clear validation on input
+    requiredFields.forEach(field => {
+      field.addEventListener('input', () => {
+        const fieldContainer = field.closest('.field');
+        if (field.value.trim()) {
+          fieldContainer.classList.remove('invalid');
+        }
+      });
+    });
+  }
 })();
