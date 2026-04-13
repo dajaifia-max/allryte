@@ -232,6 +232,11 @@ p { margin: 0.35rem 0 0.8rem; }
 }
 
 .field { display: grid; gap: 0.35rem; margin: 0.45rem 0; }
+.required { color: #ff6b6b; font-weight: 600; }
+.field.invalid input, .field.invalid select, .field.invalid textarea {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+}
 input, textarea {
   width: 100%;
   background: rgba(0, 0, 0, 0.25);
