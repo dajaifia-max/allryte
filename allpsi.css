@@ -39,22 +39,25 @@
 html {
   margin: 0;
   padding: 0;
-  background: radial-gradient(1200px 900px at 10% -10%, #1a3b34 0, transparent 70%), linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-  background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-body);
   overflow-x: hidden;
+  background-color: var(--bg);
   min-height: 100vh;
   height: 100%;
 }
+
 body {
   margin: 0;
   padding: 0;
   position: relative;
   line-height: 1.58;
-  background: transparent;
+  background: radial-gradient(1200px 900px at 10% -10%, #1a3b34 0, transparent 70%), linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  background-attachment: scroll;
+  background-size: 100% 100%;
   overscroll-behavior-y: none;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 h1, h2, h3, h4 {
@@ -90,6 +93,7 @@ h1, h2, h3, h4 {
   margin-inline: auto;
   position: relative;
   z-index: 2;
+  padding-bottom: calc(3rem + env(safe-area-inset-bottom));
 }
 
 /* Remove bottom margin from last content block before footer */
@@ -372,23 +376,36 @@ input:focus, select:focus, textarea:focus {
   .footer {
     border-top: 1px solid rgba(183,255,227,0.15);
     margin-top: 0.7rem;
-    padding: 1rem 0 0.2rem;
+    padding: 1rem 0 calc(2rem + env(safe-area-inset-bottom));
     color: var(--muted);
     font-size: 0.9rem;
+    background: transparent;
+    position: relative;
+    z-index: 2;
   }
 
 body[data-page="launch"] .footer {
   border-top: 1px solid rgba(183,255,227,0.15);
   margin-top: 0.7rem;
-  padding: 1rem 0 0.2rem;
+  padding: 1rem 0 calc(2rem + env(safe-area-inset-bottom));
   color: var(--muted);
   font-size: 0.9rem;
-  background: inherit;
+  background: transparent;
   box-shadow: none;
   pointer-events: auto;
   user-select: text;
   height: auto;
   min-height: auto;
+  position: relative;
+  z-index: 2;
+}
+
+.bottom-border {
+  height: calc(3rem + env(safe-area-inset-bottom));
+  min-height: 3rem;
+  background: var(--bg-2);
+  position: relative;
+  z-index: 2;
 }
 
 .back-button {
@@ -408,6 +425,8 @@ body[data-page="launch"] .footer {
   box-shadow: 0 10px 24px rgba(0,0,0,0.14);
   cursor: pointer;
   backdrop-filter: blur(14px);
+  transform: translateZ(0); /* Hardware acceleration for smooth scrolling */
+  will-change: transform; /* Optimize for position changes */
 }
 
 .back-button:focus-visible {
@@ -486,5 +505,9 @@ body[data-page="launch"] .footer {
     margin-left: auto;
   }
   
-  .back-button { display: inline-flex; align-items: center; justify-content: center; }
+  body[data-page="launch"] .back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
