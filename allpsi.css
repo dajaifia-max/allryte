@@ -41,8 +41,7 @@ html {
   padding: 0;
   color: var(--text);
   font-family: var(--font-body);
-  overflow: hidden;
-  overflow-y: auto;
+  overflow-x: hidden;
   background-color: var(--bg);
   min-height: 100vh;
   height: 100%;
@@ -486,12 +485,12 @@ body[data-page="launch"] .footer {
     transition: right 0.3s ease;
     z-index: 25;
     overflow-y: auto;
-    visibility: hidden;
+    display: none;
   }
   
   .mobile-nav.is-open {
     right: 0;
-    visibility: visible;
+    display: flex;
   }
   
   .mobile-nav .pill {
