@@ -4,6 +4,8 @@
   const year = document.querySelector('[data-year]');
   const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
   const mobileNav = document.querySelector('.mobile-nav');
+  const loadingCursor = document.querySelector('.loading-cursor');
+  let loadingTimeout;
   const titleMap = {
     launch: 'Allryte Psychiatry | Launch',
     home: 'Allryte Psychiatry | Home',
@@ -29,6 +31,10 @@
   function route() {
     const hash = window.location.hash.slice(1);
     updateActivePage(hash || 'launch');
+    // Small delay to ensure scroll happens after content is updated
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 10);
   }
 
   if (year) year.textContent = new Date().getFullYear();
@@ -74,6 +80,26 @@
     });
   }
   route();
+
+  // Loading cursor logic
+  if (loadingCursor) {
+    // Show loading cursor after 500ms delay
+    loadingTimeout = setTimeout(() => {
+      loadingCursor.classList.add('is-visible');
+    }, 500);
+
+    // Hide loading cursor when page is fully loaded
+    window.addEventListener('load', () => {
+      clearTimeout(loadingTimeout);
+      loadingCursor.classList.remove('is-visible');
+    });
+
+    // Also hide if page loads before the delay
+    if (document.readyState === 'complete') {
+      clearTimeout(loadingTimeout);
+      loadingCursor.classList.remove('is-visible');
+    }
+  }
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {

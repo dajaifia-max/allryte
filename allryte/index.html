@@ -8,8 +8,6 @@
   <link rel="stylesheet" href="allpsi.css">
 </head>
 <body data-page="launch">
-  <div class="loading-cursor" aria-hidden="true"></div>
-  <a href="#main" class="skip-link">Skip to main content</a>
   <div class="bg-orb" aria-hidden="true"></div>
   <div class="bg-orb bg-orb--2" aria-hidden="true"></div>
 
@@ -23,12 +21,7 @@
         </div>
       </div>
       <div class="topbar-actions">
-        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-        <nav class="mobile-nav" aria-label="Primary">
+        <nav aria-label="Primary">
           <a class="pill" href="#launch" data-page="launch">Launch</a>
           <a class="pill" href="#home" data-page="home">Home</a>
           <a class="pill" href="#services" data-page="services">Services</a>
@@ -41,15 +34,15 @@
     </div>
   </header>
 
-  <main id="main" class="container" role="main">
+  <main class="container">
     <section id="launch" class="page-section is-active">
       <div class="page-hero reveal">
         <p class="tiny">Launching soon</p>
         <h1>Compassionate care for your mental health.</h1>
         <p class="muted">At Allryte, led by Nurse Practitioner and Clinic Head Maurice Ajaifia, we provide comprehensive psychological testing, diagnosis, and treatment services to support mental wellbeing and recovery.</p>
         <div class="cta">
-          <a class="btn btn-primary" href="mailto:intake@allryte.psychiatry?subject=Launch%20Updates%20-%20Allryte%20Psychiatry" aria-label="Get launch updates via email">Get launch updates</a>
-          <a class="btn" href="#home" aria-label="Navigate to main site">Enter main site</a>
+          <a class="btn btn-primary" href="mailto:intake@allryte.psychiatry?subject=Launch%20Updates%20-%20Allryte%20Psychiatry">Get launch updates</a>
+          <a class="btn" href="#home">Enter main site</a>
         </div>
       </div>
 
@@ -66,7 +59,7 @@
           <p class="tiny">Board-certified psychiatric and therapy support</p>
           <h1>Calm, modern care for mental wellness and recovery.</h1>
           <p class="muted">In-person and telehealth options with clear next steps, transparent scheduling, and private communication.</p>
-          <div class="cta"><a class="btn btn-primary" href="#contact" aria-label="Book an appointment">Book appointment</a><a class="btn" href="tel:+15550102020" aria-label="Call clinic at (555) 010-2020">Call clinic</a></div>
+          <div class="cta"><a class="btn btn-primary" href="#contact">Book first appointment</a><a class="btn" href="tel:+15550102020">Call clinic</a></div>
         </article>
         <aside class="card">
           <h2>What patients can expect</h2>
@@ -82,7 +75,7 @@
       <div class="card section reveal">
         <h2>Find Information Fast</h2>
         <p class="muted">This site is now split into focused sections so patients and families can quickly find what they need.</p>
-        <div class="cta"><a class="btn btn-primary" href="#services" aria-label="Explore our services">Explore services</a><a class="btn" href="#portal" aria-label="View patient portal workflow">View patient portal flow</a><a class="btn" href="#about" aria-label="Meet our clinic team">Meet the clinic</a></div>
+        <div class="cta"><a class="btn btn-primary" href="#services">Explore services</a><a class="btn" href="#portal">View patient portal flow</a><a class="btn" href="#about">Meet the clinic</a></div>
       </div>
 
       <div class="services-grid section reveal">
@@ -110,7 +103,7 @@
       <div class="card section reveal">
         <h2>Insurance and Pricing</h2>
         <p class="muted">Offer self-pay and superbill options. Replace with final billing details before production.</p>
-        <div class="cta"><a class="btn btn-primary" href="#contact" aria-label="Contact us about insurance options">Ask about options</a></div>
+        <div class="cta"><a class="btn btn-primary" href="#contact">Ask about options</a></div>
       </div>
     </section>
 
@@ -130,7 +123,7 @@
       <div class="card section reveal">
         <h2>Compliance Note</h2>
         <p class="muted">Connect this page to a HIPAA-compliant portal/EHR with signed BAAs before launch.</p>
-        <div class="cta"><a class="btn btn-primary" href="#contact" aria-label="Request portal implementation support">Request implementation support</a></div>
+        <div class="cta"><a class="btn btn-primary" href="#contact">Request implementation support</a></div>
       </div>
     </section>
 
@@ -140,21 +133,15 @@
         <p class="muted">We provide compassionate, professional, and personalized mental health care for individuals and families.</p>
       </div>
 
-      <div class="hero-grid section reveal">
-        <article class="card">
-          <h2>Our Mission</h2>
-          <p>We combine clear diagnosis, evidence-based treatment, and ongoing support so each patient has a practical plan for long-term wellbeing.</p>
-          <div class="services-grid" style="margin-top: 1rem;">
-            <article class="service"><h3>Experienced Team</h3><p>Care led by Nurse Practitioner and Clinic Head Maurice Ajaifia, along with trained mental health professionals.</p></article>
-            <article class="service"><h3>Personalized Plans</h3><p>Therapy and medication planning tailored to each patient.</p></article>
-            <article class="service"><h3>Confidential Care</h3><p>Supportive environment that protects patient privacy.</p></article>
-          </div>
-        </article>
-        <aside class="card office-image-placeholder">
-          <div class="image-placeholder">
-            <p class="muted" style="text-align: center; padding: 2rem;">Office Image Placeholder</p>
-          </div>
-        </aside>
+      <div class="card section reveal">
+        <h2>Our Mission</h2>
+        <p>We combine clear diagnosis, evidence-based treatment, and ongoing support so each patient has a practical plan for long-term wellbeing.</p>
+      </div>
+
+      <div class="services-grid reveal">
+        <article class="service"><h3>Experienced Team</h3><p>Care led by Nurse Practitioner and Clinic Head Maurice Ajaifia, along with trained mental health professionals.</p></article>
+        <article class="service"><h3>Personalized Plans</h3><p>Therapy and medication planning tailored to each patient.</p></article>
+        <article class="service"><h3>Confidential Care</h3><p>Supportive environment that protects patient privacy.</p></article>
       </div>
 
       <div class="card section reveal">
@@ -192,7 +179,7 @@
             <select><option>Morning</option><option>Afternoon</option><option>Evening</option></select>
           </label>
           <label class="field">How can we help?<textarea rows="4" placeholder="No urgent or highly sensitive details."></textarea></label>
-          <button class="btn btn-primary" type="button" aria-label="Submit contact request">Submit request</button>
+          <button class="btn btn-primary" type="button">Submit request</button>
           <p class="tiny">Privacy note: connect this form to a secure intake endpoint before go-live.</p>
         </form>
         <aside class="card">
@@ -209,10 +196,9 @@
     <footer class="footer reveal">
       <p>© <span data-year></span> Allryte Psychiatry. All rights reserved. Draft 4/13/26</p>
     </footer>
-    <div class="bottom-spacer" aria-hidden="true"></div>
   </main>
 
-  <button class="back-button" type="button" onclick="history.back()" aria-label="Go back">←</button>
+  <button class="back-button" type="button" onclick="history.back()" aria-label="Go back">Back</button>
   <script src="allpsi.js"></script>
 </body>
 </html>
