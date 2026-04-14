@@ -186,8 +186,10 @@
 
       <div class="contact-wrap reveal">
         <form class="card">
-          <label class="field">Full name<input type="text" autocomplete="name" placeholder="Your full name"></label>
-          <label class="field">Phone or email<input type="text" autocomplete="email" placeholder="(555) 010-2020 or you@email.com"></label>
+          <label class="field">Full name<input type="text" autocomplete="name" placeholder="Your full name" required></label>
+          <label class="field">Email<input type="email" autocomplete="email" placeholder="you@email.com" required></label>
+          <label class="field">Confirm email<input type="email" autocomplete="email" placeholder="Confirm your email" required></label>
+          <label class="field">Phone (optional)<input type="tel" autocomplete="tel" placeholder="(555) 010-2020"></label>
           <label class="field">Best time to reach you
             <select><option>Morning</option><option>Afternoon</option><option>Evening</option></select>
           </label>
