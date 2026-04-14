@@ -1,7 +1,9 @@
 (() => {
   const sections = document.querySelectorAll('.page-section');
-  const pills = document.querySelectorAll('nav .pill');
+  const pills = document.querySelectorAll('.mobile-nav .pill');
   const year = document.querySelector('[data-year]');
+  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+  const mobileNav = document.querySelector('.mobile-nav');
   const titleMap = {
     launch: 'Allryte Psychiatry | Launch',
     home: 'Allryte Psychiatry | Home',
@@ -36,9 +38,41 @@
       const target = link.dataset.page;
       if (target) {
         window.location.hash = target;
+        // Close mobile menu if open
+        if (mobileNav.classList.contains('is-open')) {
+          mobileNav.classList.remove('is-open');
+          mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        }
       }
     });
   });
+
+  // Mobile menu toggle
+  if (mobileMenuToggle && mobileNav) {
+    mobileMenuToggle.addEventListener('click', () => {
+      const isOpen = mobileNav.classList.toggle('is-open');
+      mobileMenuToggle.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (mobileNav.classList.contains('is-open') && 
+          !mobileNav.contains(e.target) && 
+          !mobileMenuToggle.contains(e.target)) {
+        mobileNav.classList.remove('is-open');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileNav.classList.contains('is-open')) {
+        mobileNav.classList.remove('is-open');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        mobileMenuToggle.focus();
+      }
+    });
+  }
   route();
 
   const observer = new IntersectionObserver((entries) => {
