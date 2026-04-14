@@ -41,7 +41,8 @@ html {
   padding: 0;
   color: var(--text);
   font-family: var(--font-body);
-  overflow-x: hidden;
+  overflow: hidden;
+  overflow-y: auto;
   background-color: var(--bg);
   min-height: 100vh;
   height: 100%;
@@ -425,8 +426,6 @@ body[data-page="launch"] .footer {
   box-shadow: 0 10px 24px rgba(0,0,0,0.14);
   cursor: pointer;
   backdrop-filter: blur(14px);
-  transform: translateZ(0); /* Hardware acceleration for smooth scrolling */
-  will-change: transform; /* Optimize for position changes */
 }
 
 .back-button:focus-visible {
@@ -487,10 +486,12 @@ body[data-page="launch"] .footer {
     transition: right 0.3s ease;
     z-index: 25;
     overflow-y: auto;
+    visibility: hidden;
   }
   
   .mobile-nav.is-open {
     right: 0;
+    visibility: visible;
   }
   
   .mobile-nav .pill {
@@ -505,9 +506,5 @@ body[data-page="launch"] .footer {
     margin-left: auto;
   }
   
-  body[data-page="launch"] .back-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .back-button { display: inline-flex; align-items: center; justify-content: center; }
 }
