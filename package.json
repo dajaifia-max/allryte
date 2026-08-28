@@ -1,0 +1,16 @@
+{
+  "name": "allryte-psychiatry-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Public Allryte Psychiatry website with a PHI-free patient portal handoff.",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env --watch server.mjs",
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "test": "node --test",
+    "check": "node --check server.mjs && node --check server/app.mjs && node --check server/config.mjs && node --check server/portal.mjs && node --check allpsi.js"
+  },
+  "engines": {
+    "node": ">=20.12"
+  }
+}

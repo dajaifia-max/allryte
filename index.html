@@ -3,43 +3,90 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b1d1b">
+  <meta name="theme-color" content="#0b1f1c">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="Compassionate, evidence-based psychiatric care from Allryte Psychiatry in Salem, Oregon.">
   <title>Allryte Psychiatry | Launch</title>
   <link rel="stylesheet" href="allpsi.css">
 </head>
 <body data-page="launch">
   <div class="loading-cursor" aria-hidden="true"></div>
   <a href="#main" class="skip-link">Skip to main content</a>
+  <p class="sr-only" id="route-status" role="status" aria-live="polite" aria-atomic="true"></p>
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="tab-icon-launch" viewBox="0 0 24 24">
+      <path d="m12 2 1.45 5.1L18 9l-4.55 1.9L12 16l-1.45-5.1L6 9l4.55-1.9L12 2Z" />
+      <path d="M19 15v4M17 17h4" />
+    </symbol>
+    <symbol id="tab-icon-home" viewBox="0 0 24 24">
+      <path d="m3 11.5 9-7.5 9 7.5" />
+      <path d="M5.5 10v10h13V10M9.5 20v-6h5v6" />
+    </symbol>
+    <symbol id="tab-icon-services" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 8v8M8 12h8" />
+    </symbol>
+    <symbol id="tab-icon-portal" viewBox="0 0 24 24">
+      <rect x="5" y="10" width="14" height="10" rx="2" />
+      <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v2" />
+    </symbol>
+    <symbol id="tab-icon-about" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="3.5" />
+      <path d="M5 20c.7-4 3.2-6 7-6s6.3 2 7 6" />
+    </symbol>
+    <symbol id="tab-icon-faq" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.7 9a2.4 2.4 0 1 1 3.1 2.3c-.8.3-.8.9-.8 1.7M12 16.8v.2" />
+    </symbol>
+    <symbol id="tab-icon-contact" viewBox="0 0 24 24">
+      <path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3.1 5.2 2 2 0 0 1 5.1 3h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L9 11a16 16 0 0 0 4 4l1.3-1.3a2 2 0 0 1 2.1-.5c1 .3 1.9.6 2.9.7a2 2 0 0 1 1.7 2Z" />
+    </symbol>
+  </svg>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+  <div class="motion-field" aria-hidden="true">
+    <svg viewBox="0 0 900 1200" preserveAspectRatio="xMidYMid slice" focusable="false">
+      <path class="motion-path motion-path--ghost" pathLength="1" d="M778 5C498 142 785 297 520 416C248 539 548 686 310 821C131 922 216 1068 50 1197" />
+      <path class="motion-path motion-path--draw" pathLength="1" d="M778 5C498 142 785 297 520 416C248 539 548 686 310 821C131 922 216 1068 50 1197" />
+      <circle class="motion-node motion-node--one" cx="520" cy="416" r="9" />
+      <circle class="motion-node motion-node--two" cx="310" cy="821" r="7" />
+    </svg>
+  </div>
   <div class="bg-orb" aria-hidden="true"></div>
   <div class="bg-orb bg-orb--2" aria-hidden="true"></div>
+  <button class="theme-switch" type="button" aria-label="Use light theme" aria-pressed="false" data-theme-switch>
+    <span class="theme-icon">✧</span>
+  </button>
 
   <header class="topbar">
     <div class="container topbar-inner">
       <div class="brand">
-        <img src="logo.png" alt="Allryte Psychiatry Logo" class="brand-logo">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="logo.png" alt="" class="brand-logo">
+        </span>
         <div>
           <p><strong>Allryte // Psychiatry</strong> <small>by Maurice Ajaifia</small></p>
           <p>Compassionate, evidence-based care</p>
         </div>
       </div>
       <div class="topbar-actions">
-        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
-          <span></span>
-          <span></span>
-          <span></span>
+        <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
         </button>
-        <nav class="mobile-nav" aria-label="Primary">
-          <a class="pill" href="#launch" data-page="launch">Launch</a>
-          <a class="pill" href="#home" data-page="home">Home</a>
-          <a class="pill" href="#services" data-page="services">Services</a>
-          <a class="pill" href="#portal" data-page="portal">Patient Portal</a>
-          <a class="pill" href="#about" data-page="about">About</a>
-          <a class="pill" href="#faq" data-page="faq">FAQ</a>
-          <a class="pill" href="#contact" data-page="contact">Contact</a>
+        <nav class="mobile-nav" id="primary-navigation" aria-label="Primary">
+          <a class="pill" href="#launch" data-page="launch"><svg class="tab-icon" aria-hidden="true"><use href="#tab-icon-launch" /></svg><span>Launch</span></a>
+          <a class="pill" href="#home" data-page="home"><svg class="tab-icon" aria-hidden="true"><use href="#tab-icon-home" /></svg><span>Home</span></a>
+          <a class="pill" href="#services" data-page="services"><svg class="tab-icon" aria-hidden="true"><use href="#tab-icon-services" /></svg><span>Services</span></a>
+          <a class="pill" href="#portal" data-page="portal"><svg class="tab-icon" aria-hidden="true"><use href="#tab-icon-portal" /></svg><span>Patient Portal</span></a>
+          <a class="pill" href="#about" data-page="about"><svg class="tab-icon" aria-hidden="true"><use href="#tab-icon-about" /></svg><span>About</span></a>
+          <a class="pill" href="#faq" data-page="faq"><svg class="tab-icon" aria-hidden="true"><use href="#tab-icon-faq" /></svg><span>FAQ</span></a>
+          <a class="pill" href="#contact" data-page="contact"><svg class="tab-icon" aria-hidden="true"><use href="#tab-icon-contact" /></svg><span>Contact</span></a>
         </nav>
       </div>
     </div>
   </header>
+  <button class="nav-scrim" type="button" aria-label="Close navigation menu" data-nav-dismiss tabindex="-1"></button>
 
   <main id="main" class="container" role="main">
     <section id="launch" class="page-section is-active">
@@ -128,9 +175,10 @@
       </div>
 
       <div class="card section reveal">
-        <h2>Compliance Note</h2>
-        <p class="muted">Connect this page to a HIPAA-compliant portal/EHR with signed BAAs before launch.</p>
-        <div class="cta"><a class="btn btn-primary" href="#contact" aria-label="Request portal implementation support">Request implementation support</a></div>
+        <h2>Secure Portal Handoff</h2>
+        <p class="muted">Patient sign-in, intake, messages, and records will stay inside the clinic's approved portal—not on this public website.</p>
+        <div class="cta"><a class="btn btn-primary" href="/api/portal/launch" data-portal-launch aria-describedby="portal-status">Open secure patient portal</a><a class="btn" href="#contact">Contact the clinic</a></div>
+        <p class="tiny portal-status" id="portal-status" data-portal-status role="status" aria-live="polite" tabindex="-1">Checking the secure portal connection…</p>
       </div>
     </section>
 
@@ -144,7 +192,7 @@
         <article class="card">
           <h2>Our Mission</h2>
           <p>We combine clear diagnosis, evidence-based treatment, and ongoing support so each patient has a practical plan for long-term wellbeing.</p>
-          <div class="services-grid" style="margin-top: 1rem;">
+          <div class="services-grid mission-services">
             <article class="service"><h3>Experienced Team</h3><p>Care led by Nurse Practitioner and Clinic Head Maurice Ajaifia, along with trained mental health professionals.</p></article>
             <article class="service"><h3>Personalized Plans</h3><p>Therapy and medication planning tailored to each patient.</p></article>
             <article class="service"><h3>Confidential Care</h3><p>Supportive environment that protects patient privacy.</p></article>
@@ -152,7 +200,7 @@
         </article>
         <aside class="card office-image-placeholder">
           <div class="image-placeholder">
-            <p class="muted" style="text-align: center; padding: 2rem;">Office Image Placeholder</p>
+            <p class="muted office-placeholder-copy">Office Image Placeholder</p>
           </div>
         </aside>
       </div>
@@ -180,41 +228,130 @@
 
     <section id="contact" class="page-section">
       <div class="page-hero reveal">
-        <h1>Request a Confidential Call</h1>
-        <p class="muted">Share non-urgent details and our team will contact you during clinic hours.</p>
+        <h1>Contact the Clinic</h1>
+        <p class="muted">Use the patient portal for private care questions and health information. Call the clinic for general scheduling help.</p>
       </div>
 
       <div class="contact-wrap reveal">
-        <form class="card">
-          <label class="field">Full name<input type="text" autocomplete="name" placeholder="Your full name" required></label>
-          <label class="field">Email<input type="email" autocomplete="email" placeholder="you@email.com" required></label>
-          <label class="field">Confirm email<input type="email" autocomplete="email" placeholder="Confirm your email" required></label>
-          <label class="field">Phone (optional)<input type="tel" autocomplete="tel" placeholder="(555) 010-2020"></label>
-          <label class="field">Best time to reach you
-            <select><option>Morning</option><option>Afternoon</option><option>Evening</option></select>
-          </label>
-          <label class="field">How can we help?<textarea rows="4" placeholder="No urgent or highly sensitive details."></textarea></label>
-          <button class="btn btn-primary" type="button" aria-label="Submit contact request">Submit request</button>
-          <p class="tiny">Privacy note: connect this form to a secure intake endpoint before go-live.</p>
-        </form>
+        <article class="card contact-actions-card">
+          <p class="tiny">Privacy-first contact</p>
+          <h2>Choose a secure next step</h2>
+          <p>The public website does not collect medical histories, symptoms, diagnoses, or treatment questions.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="/api/portal/launch" data-portal-launch aria-describedby="contact-portal-status">Open secure patient portal</a>
+            <a class="btn" href="tel:+15550102020" aria-label="Call clinic at (555) 010-2020">Call the clinic</a>
+          </div>
+          <p class="tiny portal-status" id="contact-portal-status" data-portal-status role="status" aria-live="polite" tabindex="-1">Checking the secure portal connection…</p>
+          <p class="tiny"><strong>Do not send health information by ordinary email.</strong> Email is for general administrative questions only.</p>
+        </article>
         <aside class="card">
           <h2>Clinic Details</h2>
           <p><strong>Phone:</strong> (555) 010-2020<br><strong>Email:</strong> intake@allryte.psychiatry<br><strong>Address:</strong> 123 Calm St, Suite 4, Salem OR<br><strong>Hours:</strong> Mon-Fri 9am-5pm</p>
-          <div class="map-container">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9812.730368464692!2d-123.04233040208541!3d44.937059826844944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54bffefcbc4b9c63%3A0xf93429e08f0357c2!2sSalem%2C%20OR!5e1!3m2!1sen!2sus!4v1768397875767!5m2!1sen!2sus" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <div class="map-container" data-map>
+            <div class="map-consent">
+              <div class="map-pin" aria-hidden="true">⌖</div>
+              <h3>Find the clinic</h3>
+              <p class="tiny">The interactive map is provided by Google and loads only with your permission.</p>
+              <div class="cta">
+                <button class="btn btn-primary" type="button" data-load-map data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9812.730368464692!2d-123.04233040208541!3d44.937059826844944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54bffefcbc4b9c63%3A0xf93429e08f0357c2!2sSalem%2C%20OR!5e1!3m2!1sen!2sus!4v1768397875767!5m2!1sen!2sus">Load interactive map</button>
+                <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Salem%2C%20OR" target="_blank" rel="noopener noreferrer">Open Google Maps</a>
+              </div>
+            </div>
           </div>
           <p class="tiny"><strong>Emergency:</strong> If there is immediate danger or risk, call emergency services or go to the nearest ER.</p>
         </aside>
       </div>
     </section>
 
+    <div class="pnw-divider reveal" aria-hidden="true">
+      <svg viewBox="0 0 1200 190" preserveAspectRatio="xMidYMax slice" focusable="false">
+        <defs>
+          <symbol id="evergreen" viewBox="0 0 80 150">
+            <path d="M32 150h16v-24H32zM40 0 18 45h13L8 84h20L0 128h80L52 84h20L49 45h13z" />
+          </symbol>
+          <path id="sun-ray-long" d="M0-36V-64" />
+          <path id="sun-ray-medium" d="M0-36V-55" />
+          <path id="sun-ray-split" d="M0-36V-46M0-52V-62" />
+          <path id="pnw-ridge-back-shape" d="M0 122C170 83 300 98 424 118c158 25 257-46 397-38 134 8 221 66 379 33v77H0Z" />
+          <mask id="pnw-sunrise-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1200" height="190">
+            <rect width="1200" height="190" fill="#fff" />
+            <use href="#pnw-ridge-back-shape" fill="#000" />
+          </mask>
+        </defs>
+        <g class="pnw-sun-layer" mask="url(#pnw-sunrise-mask)">
+          <g class="pnw-sunburst" transform="translate(835 80)">
+            <circle class="pnw-sun-halo" r="52" />
+            <g class="pnw-sun-rays">
+            <use href="#sun-ray-long" transform="rotate(0)" />
+            <use href="#sun-ray-medium" transform="rotate(10)" />
+            <use href="#sun-ray-split" transform="rotate(20)" />
+            <use href="#sun-ray-long" transform="rotate(30)" />
+            <use href="#sun-ray-medium" transform="rotate(40)" />
+            <use href="#sun-ray-split" transform="rotate(50)" />
+            <use href="#sun-ray-long" transform="rotate(60)" />
+            <use href="#sun-ray-medium" transform="rotate(70)" />
+            <use href="#sun-ray-split" transform="rotate(80)" />
+            <use href="#sun-ray-long" transform="rotate(90)" />
+            <use href="#sun-ray-medium" transform="rotate(100)" />
+            <use href="#sun-ray-split" transform="rotate(110)" />
+            <use href="#sun-ray-long" transform="rotate(120)" />
+            <use href="#sun-ray-medium" transform="rotate(130)" />
+            <use href="#sun-ray-split" transform="rotate(140)" />
+            <use href="#sun-ray-long" transform="rotate(150)" />
+            <use href="#sun-ray-medium" transform="rotate(160)" />
+            <use href="#sun-ray-split" transform="rotate(170)" />
+            <use href="#sun-ray-long" transform="rotate(180)" />
+            <use href="#sun-ray-medium" transform="rotate(190)" />
+            <use href="#sun-ray-split" transform="rotate(200)" />
+            <use href="#sun-ray-long" transform="rotate(210)" />
+            <use href="#sun-ray-medium" transform="rotate(220)" />
+            <use href="#sun-ray-split" transform="rotate(230)" />
+            <use href="#sun-ray-long" transform="rotate(240)" />
+            <use href="#sun-ray-medium" transform="rotate(250)" />
+            <use href="#sun-ray-split" transform="rotate(260)" />
+            <use href="#sun-ray-long" transform="rotate(270)" />
+            <use href="#sun-ray-medium" transform="rotate(280)" />
+            <use href="#sun-ray-split" transform="rotate(290)" />
+            <use href="#sun-ray-long" transform="rotate(300)" />
+            <use href="#sun-ray-medium" transform="rotate(310)" />
+            <use href="#sun-ray-split" transform="rotate(320)" />
+            <use href="#sun-ray-long" transform="rotate(330)" />
+            <use href="#sun-ray-medium" transform="rotate(340)" />
+            <use href="#sun-ray-split" transform="rotate(350)" />
+            </g>
+            <circle class="pnw-sun" r="28" />
+          </g>
+        </g>
+        <use class="pnw-ridge pnw-ridge--back" href="#pnw-ridge-back-shape" />
+        <g class="pnw-trees pnw-trees--far">
+          <use href="#evergreen" x="36" y="64" width="62" height="116" />
+          <use href="#evergreen" x="132" y="86" width="49" height="92" />
+          <use href="#evergreen" x="218" y="50" width="68" height="128" />
+          <use href="#evergreen" x="344" y="78" width="53" height="100" />
+          <use href="#evergreen" x="465" y="58" width="64" height="120" />
+          <use href="#evergreen" x="612" y="88" width="48" height="90" />
+          <use href="#evergreen" x="727" y="61" width="63" height="118" />
+          <use href="#evergreen" x="864" y="82" width="52" height="98" />
+          <use href="#evergreen" x="1055" y="55" width="66" height="124" />
+        </g>
+        <path class="pnw-ridge pnw-ridge--front" d="M0 151c126-34 236-8 345 8 160 24 284-42 422-32 145 10 247 56 433 15v48H0Z" />
+        <g class="pnw-trees pnw-trees--near">
+          <use href="#evergreen" x="82" y="77" width="62" height="116" />
+          <use href="#evergreen" x="286" y="62" width="72" height="134" />
+          <use href="#evergreen" x="535" y="93" width="55" height="103" />
+          <use href="#evergreen" x="790" y="72" width="66" height="124" />
+          <use href="#evergreen" x="970" y="85" width="59" height="111" />
+          <use href="#evergreen" x="1130" y="68" width="68" height="128" />
+        </g>
+      </svg>
+    </div>
+
     <footer class="footer reveal">
-      <p>© <span data-year></span> Allryte Psychiatry. All rights reserved. Draft 4/13/26</p>
+      <p>© <span data-year></span> Allryte Psychiatry. All rights reserved. Draft 08/27/26</p>
     </footer>
     <div class="bottom-spacer" aria-hidden="true"></div>
   </main>
 
-  <button class="back-button" type="button" onclick="history.back()" aria-label="Go back">←</button>
   <script src="allpsi.js"></script>
 </body>
 </html>

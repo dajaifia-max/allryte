@@ -4,8 +4,17 @@
   const year = document.querySelector('[data-year]');
   const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
   const mobileNav = document.querySelector('.mobile-nav');
+  const navDismiss = document.querySelector('[data-nav-dismiss]');
   const loadingCursor = document.querySelector('.loading-cursor');
+  const footerMotif = document.querySelector('.pnw-divider');
+  const routeStatus = document.querySelector('#route-status');
+  const skipLink = document.querySelector('.skip-link');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const compactNavigation = window.matchMedia('(max-width: 1040px)');
+  const root = document.documentElement;
   let loadingTimeout;
+  let motionFrame;
+  let revealObserver;
   const titleMap = {
     launch: 'Allryte Psychiatry | Launch',
     home: 'Allryte Psychiatry | Home',
@@ -17,68 +26,173 @@
   };
 
   function updateActivePage(page) {
-    const normalized = document.getElementById(page) ? page : 'launch';
+    const normalized = Object.hasOwn(titleMap, page) ? page : 'launch';
     sections.forEach((section) => {
       section.classList.toggle('is-active', section.id === normalized);
     });
     pills.forEach((link) => {
-      link.classList.toggle('is-active', link.dataset.page === normalized);
+      const isCurrent = link.dataset.page === normalized;
+      link.classList.toggle('is-active', isCurrent);
+      if (isCurrent) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
     });
     document.body.dataset.page = normalized;
     document.title = titleMap[normalized] || titleMap.launch;
+    return normalized;
   }
 
-  function route() {
+  function route({ announce = false } = {}) {
     const hash = window.location.hash.slice(1);
-    updateActivePage(hash || 'launch');
-    // Small delay to ensure scroll happens after content is updated
+    const activePage = updateActivePage(hash || 'launch');
     setTimeout(() => {
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      updateMotion();
+      rearmFooterMotif();
+      if (announce) {
+        const heading = document.getElementById(activePage)?.querySelector('h1');
+        if (heading) {
+          heading.setAttribute('tabindex', '-1');
+          heading.focus({ preventScroll: true });
+        }
+        if (routeStatus) {
+          routeStatus.textContent = `${heading?.textContent || titleMap[activePage]} section loaded.`;
+        }
+      }
     }, 10);
   }
 
+  function rearmFooterMotif() {
+    if (!footerMotif) return;
+    if (reducedMotion.matches || !revealObserver) {
+      if (reducedMotion.matches) footerMotif.classList.add('is-visible');
+      return;
+    }
+
+    revealObserver.unobserve(footerMotif);
+    footerMotif.classList.remove('is-visible', 'is-replaying');
+    void footerMotif.offsetWidth;
+    revealObserver.observe(footerMotif);
+  }
+
+  function syncNavigationState() {
+    if (!mobileNav) return;
+    const isOpen = mobileNav.classList.contains('is-open');
+    if (compactNavigation.matches) {
+      mobileNav.setAttribute('aria-hidden', String(!isOpen));
+    } else {
+      mobileNav.removeAttribute('aria-hidden');
+    }
+  }
+
+  function openMenu() {
+    if (!mobileMenuToggle || !mobileNav) return;
+    mobileNav.classList.add('is-open');
+    document.body.classList.add('nav-open');
+    mobileMenuToggle.setAttribute('aria-expanded', 'true');
+    mobileMenuToggle.setAttribute('aria-label', 'Close navigation menu');
+    syncNavigationState();
+    window.setTimeout(() => mobileNav.querySelector('a')?.focus(), reducedMotion.matches ? 0 : 180);
+  }
+
+  function closeMenu({ restoreFocus = false } = {}) {
+    if (!mobileMenuToggle || !mobileNav) return;
+    const wasOpen = mobileNav.classList.contains('is-open');
+    mobileNav.classList.remove('is-open');
+    document.body.classList.remove('nav-open');
+    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+    mobileMenuToggle.setAttribute('aria-label', 'Open navigation menu');
+    syncNavigationState();
+    if (restoreFocus && wasOpen) mobileMenuToggle.focus();
+  }
+
   if (year) year.textContent = new Date().getFullYear();
-  window.addEventListener('hashchange', route);
+  skipLink?.addEventListener('click', (event) => {
+    event.preventDefault();
+    const heading = document.querySelector('.page-section.is-active h1');
+    if (!heading) return;
+    heading.setAttribute('tabindex', '-1');
+    heading.focus({ preventScroll: false });
+  });
+  window.addEventListener('hashchange', () => route({ announce: true }));
   pills.forEach((link) => {
     link.addEventListener('click', () => {
       const target = link.dataset.page;
       if (target) {
         window.location.hash = target;
-        // Close mobile menu if open
-        if (mobileNav.classList.contains('is-open')) {
-          mobileNav.classList.remove('is-open');
-          mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        }
+        closeMenu();
       }
     });
   });
 
-  // Mobile menu toggle
   if (mobileMenuToggle && mobileNav) {
     mobileMenuToggle.addEventListener('click', () => {
-      const isOpen = mobileNav.classList.toggle('is-open');
-      mobileMenuToggle.setAttribute('aria-expanded', isOpen);
+      if (mobileNav.classList.contains('is-open')) closeMenu({ restoreFocus: true });
+      else openMenu();
     });
 
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (mobileNav.classList.contains('is-open') && 
-          !mobileNav.contains(e.target) && 
-          !mobileMenuToggle.contains(e.target)) {
-        mobileNav.classList.remove('is-open');
-        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+    navDismiss?.addEventListener('click', () => closeMenu({ restoreFocus: true }));
+
+    document.addEventListener('keydown', (event) => {
+      if (!mobileNav.classList.contains('is-open')) return;
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu({ restoreFocus: true });
+        return;
+      }
+
+      if (event.key === 'Tab') {
+        const focusable = [mobileMenuToggle, ...mobileNav.querySelectorAll('a[href]')];
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     });
 
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && mobileNav.classList.contains('is-open')) {
-        mobileNav.classList.remove('is-open');
-        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        mobileMenuToggle.focus();
-      }
-    });
+    const handleNavigationBreakpoint = () => {
+      if (!compactNavigation.matches) closeMenu();
+      else syncNavigationState();
+    };
+    compactNavigation.addEventListener?.('change', handleNavigationBreakpoint);
+    handleNavigationBreakpoint();
   }
+
+  function updateMotion() {
+    motionFrame = undefined;
+    if (reducedMotion.matches) {
+      root.style.setProperty('--scroll-progress', '1');
+      root.style.setProperty('--motion-field-shift', '0px');
+      root.style.setProperty('--hero-shift', '0px');
+      root.style.setProperty('--forest-far-shift', '0px');
+      root.style.setProperty('--forest-near-shift', '0px');
+      return;
+    }
+
+    const scrollTop = window.scrollY || root.scrollTop;
+    const scrollRange = Math.max(root.scrollHeight - window.innerHeight, 1);
+    const progress = Math.min(Math.max(scrollTop / scrollRange, 0), 1);
+    const limitedScroll = Math.min(scrollTop, 1600);
+    root.style.setProperty('--scroll-progress', progress.toFixed(4));
+    root.style.setProperty('--motion-field-shift', `${limitedScroll * -0.08}px`);
+    root.style.setProperty('--hero-shift', `${limitedScroll * -0.035}px`);
+    root.style.setProperty('--forest-far-shift', `${limitedScroll * -0.006}px`);
+    root.style.setProperty('--forest-near-shift', `${limitedScroll * -0.01}px`);
+  }
+
+  function requestMotionUpdate() {
+    if (motionFrame) return;
+    motionFrame = window.requestAnimationFrame(updateMotion);
+  }
+
+  window.addEventListener('scroll', requestMotionUpdate, { passive: true });
+  window.addEventListener('resize', requestMotionUpdate, { passive: true });
+  reducedMotion.addEventListener?.('change', updateMotion);
   route();
 
   // Loading cursor logic
@@ -101,219 +215,124 @@
     }
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) entry.target.classList.add('is-visible');
+  const themeSwitch = document.querySelector('[data-theme-switch]');
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    const isLight = theme === 'light';
+    themeSwitch?.setAttribute('aria-pressed', String(isLight));
+    themeSwitch?.setAttribute('aria-label', isLight ? 'Use dark theme' : 'Use light theme');
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    themeColor?.setAttribute('content', isLight ? '#f5f0e7' : '#0b1f1c');
+  }
+
+  let savedTheme = 'dark';
+  try {
+    savedTheme = localStorage.getItem('theme') || 'dark';
+  } catch (_) {
+    savedTheme = 'dark';
+  }
+  applyTheme(savedTheme);
+
+  themeSwitch?.addEventListener('click', () => {
+    const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+    try {
+      localStorage.setItem('theme', newTheme);
+    } catch (_) {
+      // The preference still applies for this visit when storage is unavailable.
+    }
+  });
+
+  const revealChildren = document.querySelectorAll(
+    '.services-grid > .service, .portal-grid > .portal-step, .faq-item'
+  );
+  revealChildren.forEach((element, index) => {
+    element.classList.add('reveal-child');
+    element.style.setProperty('--reveal-delay', `${(index % 6) * 70}ms`);
+  });
+
+  const revealTargets = document.querySelectorAll('.reveal, .reveal-child');
+  if (reducedMotion.matches || !('IntersectionObserver' in window)) {
+    revealTargets.forEach((element) => element.classList.add('is-visible'));
+  } else {
+    revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        if (entry.target === footerMotif) {
+          entry.target.classList.remove('is-replaying');
+          void entry.target.offsetWidth;
+          entry.target.classList.add('is-replaying');
+        }
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -4% 0px' });
+    revealTargets.forEach((element) => revealObserver.observe(element));
+  }
+
+  const mapLoadButton = document.querySelector('[data-load-map]');
+  mapLoadButton?.addEventListener('click', () => {
+    const mapContainer = mapLoadButton.closest('[data-map]');
+    const source = mapLoadButton.dataset.mapSrc;
+    if (!mapContainer || !source) return;
+
+    mapLoadButton.disabled = true;
+    mapLoadButton.textContent = 'Loading map…';
+    mapContainer.setAttribute('aria-busy', 'true');
+
+    const iframe = document.createElement('iframe');
+    iframe.src = source;
+    iframe.title = 'Map showing the Allryte Psychiatry clinic area';
+    iframe.loading = 'lazy';
+    iframe.referrerPolicy = 'no-referrer';
+    iframe.allowFullscreen = true;
+    iframe.addEventListener('load', () => mapContainer.removeAttribute('aria-busy'), { once: true });
+    mapContainer.replaceChildren(iframe);
+  });
+
+  // The public site intentionally does not accept intake or clinical details.
+  const portalLaunchLinks = [...document.querySelectorAll('[data-portal-launch]')];
+  const portalStatusMessages = [...document.querySelectorAll('[data-portal-status]')];
+  let portalAvailable = false;
+
+  function setPortalAvailability({ available, message }) {
+    portalAvailable = Boolean(available);
+    portalLaunchLinks.forEach((link) => {
+      link.setAttribute('aria-disabled', String(!portalAvailable));
+      link.classList.toggle('is-disabled', !portalAvailable);
     });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-
-  // Form validation
-  const form = document.querySelector('#contact form');
-  if (form) {
-    const submitBtn = form.querySelector('button[type="button"]');
-    const emailFields = form.querySelectorAll('input[type="email"]');
-    const emailField = emailFields[0];
-    const confirmEmailField = emailFields[1];
-    const phoneField = form.querySelector('input[type="tel"]');
-    const nameField = form.querySelector('input[autocomplete="name"]');
-    const selectField = form.querySelector('select');
-
-    // Common domain typos and their corrections
-    const commonTypos = {
-      'gmail.con': 'gmail.com',
-      'gmail.comm': 'gmail.com',
-      'yahoo.con': 'yahoo.com',
-      'yahoo.comm': 'yahoo.com',
-      'hotmail.con': 'hotmail.com',
-      'hotmail.comm': 'hotmail.com',
-      'outlook.con': 'outlook.com',
-      'outlook.comm': 'outlook.com',
-      'aol.con': 'aol.com',
-      'aol.comm': 'aol.com',
-      'gmial.com': 'gmail.com',
-      'gmaill.com': 'gmail.com',
-      'gmil.com': 'gmail.com',
-      'yaho.com': 'yahoo.com',
-      'yaho0.com': 'yahoo.com',
-    };
-
-    // Common disposable/temporary email domains
-    const disposableDomains = [
-      'tempmail.com', '10minutemail.com', 'guerrillamail.com',
-      'mailinator.com', 'trashmail.com', 'sharklasers.com',
-      'getairmail.com', 'yopmail.com', 'maildrop.cc',
-      'temp-mail.org', 'throwawaymail.com', 'fakeinbox.com',
-      'tempmail.de', 'tempmail.co', 'tempmail.net',
-      'tempmail.us', 'tempmail.eu', 'tempmail.asia',
-      'tempmail.info', 'tempmail.biz', 'tempmail.me',
-      'tempmail.io', 'tempmail.co.uk', 'tempmail.ca',
-      'tempmail.au', 'tempmail.in', 'tempmail.jp',
-      'tempmail.cn', 'tempmail.ru', 'tempmail.br',
-      'tempmail.mx', 'tempmail.es', 'tempmail.fr',
-      'tempmail.de', 'tempmail.it', 'tempmail.nl',
-      'tempmail.pl', 'tempmail.se', 'tempmail.no',
-      'tempmail.dk', 'tempmail.fi', 'tempmail.gr',
-      'tempmail.pt', 'tempmail.ch', 'tempmail.at',
-      'tempmail.cz', 'tempmail.hu', 'tempmail.ro',
-      'tempmail.bg', 'tempmail.hr', 'tempmail.si',
-      'tempmail.sk', 'tempmail.lv', 'tempmail.ee',
-      'tempmail.lt', 'tempmail.ua', 'tempmail.by',
-      'tempmail.kz', 'tempmail.uz', 'tempmail.ge',
-      'tempmail.am', 'tempmail.az', 'tempmail.kg',
-      'tempmail.tj', 'tempmail.tm', 'tempmail.md',
-      'tempmail.al', 'tempmail.mk', 'tempmail.rs',
-      'tempmail.ba', 'tempmail.me', 'tempmail.tr',
-      'tempmail.cy', 'tempmail.il', 'tempmail.jo',
-      'tempmail.lb', 'tempmail.ps', 'tempmail.sa',
-      'tempmail.ae', 'tempmail.qa', 'tempmail.bh',
-      'tempmail.kw', 'tempmail.om', 'tempmail.ye',
-      'tempmail.ir', 'tempmail.pk', 'tempmail.af',
-      'tempmail.bd', 'tempmail.lk', 'tempmail.np',
-      'tempmail.in', 'tempmail.mm', 'tempmail.th',
-      'tempmail.vn', 'tempmail.kh', 'tempmail.la',
-      'tempmail.my', 'tempmail.sg', 'tempmail.id',
-      'tempmail.ph', 'tempmail.bn', 'tempmail.tw',
-      'tempmail.hk', 'tempmail.mo', 'tempmail.cn',
-      'tempmail.kr', 'tempmail.jp', 'tempmail.mn',
-      'tempmail.kz', 'tempmail.uz', 'tempmail.tm',
-      'tempmail.ru', 'tempmail.ua', 'tempmail.by',
-      'tempmail.pl', 'tempmail.cz', 'tempmail.sk',
-      'tempmail.hu', 'tempmail.ro', 'tempmail.bg',
-      'tempmail.rs', 'tempmail.hr', 'tempmail.si',
-      'tempmail.ba', 'tempmail.mk', 'tempmail.al',
-      'tempmail.gr', 'tempmail.tr', 'tempmail.cy',
-      'tempmail.il', 'tempmail.jo', 'tempmail.lb',
-      'tempmail.ps', 'tempmail.sa', 'tempmail.ae',
-      'tempmail.qa', 'tempmail.bh', 'tempmail.kw',
-      'tempmail.om', 'tempmail.ye', 'tempmail.ir',
-      'tempmail.pk', 'tempmail.af', 'tempmail.bd',
-      'tempmail.lk', 'tempmail.np', 'tempmail.mm',
-      'tempmail.th', 'tempmail.vn', 'tempmail.kh',
-      'tempmail.la', 'tempmail.my', 'tempmail.sg',
-      'tempmail.id', 'tempmail.ph', 'tempmail.bn',
-      'tempmail.tw', 'tempmail.hk', 'tempmail.mo',
-      'tempmail.kr', 'tempmail.mn',
-    ];
-
-    function validateEmail(email) {
-      const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      if (!re.test(email)) return false;
-      
-      // Check for common typos
-      const domain = email.split('@')[1].toLowerCase();
-      if (commonTypos[domain]) {
-        return { valid: false, suggestion: commonTypos[domain] };
-      }
-      
-      // Check for disposable domains
-      if (disposableDomains.includes(domain)) {
-        return { valid: false, disposable: true };
-      }
-      
-      return { valid: true };
-    }
-
-    function validatePhone(phone) {
-      if (!phone) return { valid: true }; // Phone is optional
-      const re = /^[\d\s\-\(\)]+$/;
-      const digits = phone.replace(/[^\d]/g, '');
-      return { valid: re.test(phone) && digits.length >= 10 };
-    }
-
-    function validateForm() {
-      let isValid = true;
-      let emailError = '';
-      
-      // Validate name
-      if (nameField && !nameField.value.trim()) {
-        nameField.closest('.field').classList.add('invalid');
-        isValid = false;
-      } else if (nameField) {
-        nameField.closest('.field').classList.remove('invalid');
-      }
-      
-      // Validate email
-      if (emailField) {
-        if (!emailField.value.trim()) {
-          emailField.closest('.field').classList.add('invalid');
-          emailError = 'Email is required';
-          isValid = false;
-        } else {
-          const emailValidation = validateEmail(emailField.value);
-          if (!emailValidation.valid) {
-            emailField.closest('.field').classList.add('invalid');
-            if (emailValidation.suggestion) {
-              emailError = `Did you mean ${emailField.value.split('@')[0]}@${emailValidation.suggestion}?`;
-            } else if (emailValidation.disposable) {
-              emailError = 'Please use a real email address, not a temporary one';
-            } else {
-              emailError = 'Please enter a valid email address';
-            }
-            isValid = false;
-          } else {
-            emailField.closest('.field').classList.remove('invalid');
-          }
-        }
-      }
-      
-      // Validate email confirmation
-      if (confirmEmailField) {
-        if (!confirmEmailField.value.trim()) {
-          confirmEmailField.closest('.field').classList.add('invalid');
-          isValid = false;
-        } else if (emailField && confirmEmailField.value !== emailField.value) {
-          confirmEmailField.closest('.field').classList.add('invalid');
-          emailError = 'Email addresses do not match';
-          isValid = false;
-        } else {
-          confirmEmailField.closest('.field').classList.remove('invalid');
-        }
-      }
-      
-      // Validate phone (optional)
-      if (phoneField && phoneField.value.trim()) {
-        const phoneValidation = validatePhone(phoneField.value);
-        if (!phoneValidation.valid) {
-          phoneField.closest('.field').classList.add('invalid');
-          isValid = false;
-        } else {
-          phoneField.closest('.field').classList.remove('invalid');
-        }
-      } else if (phoneField) {
-        phoneField.closest('.field').classList.remove('invalid');
-      }
-      
-      return { isValid, emailError };
-    }
-
-    submitBtn.addEventListener('click', (e) => {
-      const validation = validateForm();
-      if (!validation.isValid) {
-        e.preventDefault();
-        // Scroll to first invalid field
-        const firstInvalid = form.querySelector('.invalid');
-        if (firstInvalid) {
-          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        // Show error message if available
-        if (validation.emailError) {
-          alert(validation.emailError);
-        }
-      } else {
-        // Here you would normally submit the form
-        alert('Form submitted successfully! (This is just a demo - connect to real endpoint)');
-      }
-    });
-
-    // Clear validation on input
-    [nameField, emailField, confirmEmailField, phoneField].forEach(field => {
-      if (field) {
-        field.addEventListener('input', () => {
-          const fieldContainer = field.closest('.field');
-          fieldContainer.classList.remove('invalid');
-        });
-      }
+    portalStatusMessages.forEach((status) => {
+      status.textContent = message;
     });
   }
+
+  portalLaunchLinks.forEach((link) => {
+    link.setAttribute('aria-disabled', 'true');
+    link.addEventListener('click', (event) => {
+      if (portalAvailable) return;
+      event.preventDefault();
+      const describedBy = link.getAttribute('aria-describedby');
+      if (describedBy) document.getElementById(describedBy)?.focus();
+    });
+  });
+
+  async function checkPortalAvailability() {
+    try {
+      const response = await fetch('/api/portal/status', {
+        cache: 'no-store',
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' },
+      });
+      if (!response.ok) throw new Error('Portal status unavailable');
+      setPortalAvailability(await response.json());
+    } catch (_) {
+      setPortalAvailability({
+        available: false,
+        message: 'The secure patient portal is not connected yet. Please call the clinic for assistance.',
+      });
+    }
+  }
+
+  if (portalLaunchLinks.length) checkPortalAvailability();
 })();
