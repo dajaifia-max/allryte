@@ -15,6 +15,7 @@ The portal must remain disabled until the practice has selected a HIPAA-capable 
 - The static server exposes an explicit file allowlist, so backend source, environment files, documentation, and repository metadata cannot be downloaded.
 - Browser hardening includes CSP, anti-framing, MIME sniffing protection, permissions restrictions, a referrer policy, and production HSTS.
 - Request logs contain a generated request ID, method, path, status, and duration only. They intentionally omit query strings, form data, IP addresses, cookies, authorization data, and portal URLs.
+- The same security policy is shared across Node and web-standard Fetch API runtimes, reducing the chance that changing hosts creates a weaker duplicate implementation.
 
 ## Configure a vendor
 
@@ -24,6 +25,8 @@ Copy `.env.example` to `.env` locally or set equivalent protected runtime variab
 2. Set `PORTAL_ALLOWED_HOSTS` to that exact hostname. Multiple approved hosts may be comma-separated.
 3. Set `PORTAL_ENABLED=true` only after testing and written approval.
 4. In production set `NODE_ENV=production`, `PUBLIC_ORIGIN=https://www.example.com`, `ENFORCE_HTTPS=true`, and `TRUST_PROXY=true` only when the hosting proxy overwrites `X-Forwarded-Proto`.
+
+`PORT` and `TRUST_PROXY` apply only to the Node adapter. Edge/Sites-style hosts use the remaining variables and provide their static asset service through the platform binding.
 
 Do not put API keys, OAuth client secrets, patient identifiers, email addresses, or one-time tokens in `PORTAL_URL`.
 

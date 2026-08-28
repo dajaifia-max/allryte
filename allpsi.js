@@ -15,6 +15,7 @@
   let loadingTimeout;
   let motionFrame;
   let revealObserver;
+  let viewportFrame;
   const titleMap = {
     launch: 'Allryte Psychiatry | Launch',
     home: 'Allryte Psychiatry | Home',
@@ -24,6 +25,28 @@
     faq: 'Allryte Psychiatry | FAQ',
     contact: 'Allryte Psychiatry | Contact',
   };
+
+  function syncZoomedCanvas() {
+    viewportFrame = undefined;
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+
+    const layoutWidth = root.clientWidth;
+    const isZoomedOut = viewport.scale < 0.99 && viewport.width > layoutWidth + 1;
+    document.body.classList.toggle('is-zoomed-out', isZoomedOut);
+
+    if (isZoomedOut) {
+      const constrainedWidth = Math.min(Math.ceil(viewport.width), layoutWidth * 3);
+      root.style.setProperty('--visual-viewport-width', `${constrainedWidth}px`);
+    } else {
+      root.style.removeProperty('--visual-viewport-width');
+    }
+  }
+
+  function requestViewportSync() {
+    if (viewportFrame) return;
+    viewportFrame = window.requestAnimationFrame(syncZoomedCanvas);
+  }
 
   function updateActivePage(page) {
     const normalized = Object.hasOwn(titleMap, page) ? page : 'launch';
@@ -192,7 +215,10 @@
 
   window.addEventListener('scroll', requestMotionUpdate, { passive: true });
   window.addEventListener('resize', requestMotionUpdate, { passive: true });
+  window.addEventListener('resize', requestViewportSync, { passive: true });
+  window.visualViewport?.addEventListener('resize', requestViewportSync, { passive: true });
   reducedMotion.addEventListener?.('change', updateMotion);
+  syncZoomedCanvas();
   route();
 
   // Loading cursor logic
