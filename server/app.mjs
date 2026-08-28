@@ -7,6 +7,7 @@ const STATIC_FILES = new Set([
   'index.html',
   'allpsi.css',
   'allpsi.js',
+  'theme-init.js',
   'logo.png',
   'logo-symmetrical.png',
   'logo-symmetrical-smile.png',

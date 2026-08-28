@@ -47,8 +47,11 @@ test('rejects insecure or unapproved portal destinations', () => {
 test('serves the site with browser security headers', async () => {
   const origin = await startServer(testConfig());
   const response = await fetch(`${origin}/`);
+  const themeScript = await fetch(`${origin}/theme-init.js`);
 
   assert.equal(response.status, 200);
+  assert.equal(themeScript.status, 200);
+  assert.match(themeScript.headers.get('content-type'), /text\/javascript/);
   assert.match(response.headers.get('content-security-policy'), /frame-ancestors 'none'/);
   assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
   assert.equal(response.headers.get('x-frame-options'), 'DENY');

@@ -1156,37 +1156,56 @@ body[data-page="launch"] .footer {
 
 .theme-switch {
   position: fixed;
-  right: max(1rem, env(safe-area-inset-right));
-  bottom: max(1rem, env(safe-area-inset-bottom));
+  right: max(1rem, calc(env(safe-area-inset-right) + 0.75rem));
+  bottom: max(1rem, calc(env(safe-area-inset-bottom) + 0.75rem));
   z-index: 18;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--brand);
-  font-size: 1rem;
+  border: 1px solid rgba(var(--accent-rgb), 0.62);
+  background: var(--surface-strong);
+  color: var(--accent-strong);
+  font-size: 1.3rem;
   line-height: 1;
-  box-shadow: var(--shadow);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.24), 0 0 0 4px rgba(var(--accent-rgb), 0.08);
   cursor: pointer;
   backdrop-filter: blur(14px);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  touch-action: manipulation;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, opacity 0.2s ease;
 }
 
 .theme-switch:hover {
-  transform: scale(1.1);
-  border-color: var(--brand);
+  transform: translateY(-2px) scale(1.06);
+  border-color: var(--accent-strong);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28), 0 0 0 5px rgba(var(--accent-rgb), 0.13);
+}
+
+.theme-switch:active {
+  transform: scale(0.96);
 }
 
 .theme-icon {
   display: block;
-  transition: all 0.3s ease;
+  line-height: 1;
+  transform: translateY(-0.02em);
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
-[data-theme="light"] .theme-icon { color: var(--accent); }
+[data-theme="light"] .theme-switch {
+  color: #8b4a38;
+  border-color: rgba(var(--accent-rgb), 0.52);
+  box-shadow: 0 10px 28px rgba(var(--ink-rgb), 0.15), 0 0 0 4px rgba(var(--accent-rgb), 0.08);
+}
+
+[data-theme="light"] .theme-icon { color: inherit; }
+
+body.nav-open .theme-switch {
+  opacity: 0;
+  pointer-events: none;
+}
 
 .nav-scrim { display: none; }
 
@@ -1462,6 +1481,18 @@ body[data-page="launch"] .footer {
 
   .cta > .btn { flex: 1 1 100%; }
   .map-consent { padding: 1.15rem; }
+
+  .theme-switch {
+    right: max(0.75rem, calc(env(safe-area-inset-right) + 0.75rem));
+    bottom: max(0.75rem, calc(env(safe-area-inset-bottom) + 0.75rem));
+    width: 52px;
+    height: 52px;
+    font-size: 1.42rem;
+  }
+
+  .bottom-spacer {
+    height: calc(4.75rem + env(safe-area-inset-bottom));
+  }
 
   .pnw-divider {
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%);

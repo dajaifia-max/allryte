@@ -216,23 +216,23 @@
   }
 
   const themeSwitch = document.querySelector('[data-theme-switch]');
+  const themeIcon = document.querySelector('[data-theme-icon]');
 
   function applyTheme(theme) {
-    root.setAttribute('data-theme', theme);
-    const isLight = theme === 'light';
+    const normalizedTheme = theme === 'light' ? 'light' : 'dark';
+    root.setAttribute('data-theme', normalizedTheme);
+    root.style.colorScheme = normalizedTheme;
+    const isLight = normalizedTheme === 'light';
+    const actionLabel = isLight ? 'Switch to dark mode' : 'Switch to light mode';
     themeSwitch?.setAttribute('aria-pressed', String(isLight));
-    themeSwitch?.setAttribute('aria-label', isLight ? 'Use dark theme' : 'Use light theme');
+    themeSwitch?.setAttribute('aria-label', actionLabel);
+    themeSwitch?.setAttribute('title', actionLabel);
+    if (themeIcon) themeIcon.textContent = isLight ? '☾' : '☀';
     const themeColor = document.querySelector('meta[name="theme-color"]');
     themeColor?.setAttribute('content', isLight ? '#f5f0e7' : '#0b1f1c');
   }
 
-  let savedTheme = 'dark';
-  try {
-    savedTheme = localStorage.getItem('theme') || 'dark';
-  } catch (_) {
-    savedTheme = 'dark';
-  }
-  applyTheme(savedTheme);
+  applyTheme(root.getAttribute('data-theme') || 'dark');
 
   themeSwitch?.addEventListener('click', () => {
     const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
